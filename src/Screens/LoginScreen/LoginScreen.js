@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
-  StyleSheet,
   Text,
   View,
-  Image,
   ImageBackground,
   TouchableOpacity,
   Platform,
@@ -12,17 +10,14 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
 } from 'react-native';
-import Input from '../Components/Input';
-import ButtonSubmit from '../Components/ButtonSubmit';
+import Input from '../../Components/Input/Input';
+import ButtonSubmit from '../../Components/ButtonSubmit/ButtonSubmit';
+import { styles } from './LoginScreen.styled';
 import { Formik } from 'formik';
-import registrationValidationSchema from '../Schemas/registrationValidationSchema';
+import { loginValidationSchema } from './loginValidationSchema';
 
-const RegistrationScreen = () => {
+const LoginScreen = () => {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
-
-  const [login, setLogin] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [isHidePassword, setIsHidePassword] = useState(true);
 
   const [dimensions, setDimension] = useState(Dimensions.get('window').width);
@@ -61,30 +56,16 @@ const RegistrationScreen = () => {
       <View style={styles.container}>
         <ImageBackground
           style={styles.image}
-          source={require('../assets/images/mountain.jpg')}
+          source={require('../../assets/images/mountain.jpg')}
         >
           <KeyboardAvoidingView
             behavior={Platform.OS == 'ios' ? 'padding' : ''}
           >
             <View style={styles.wrapper}>
-              <View style={styles.userPhoto}>
-                <TouchableOpacity
-                  style={styles.btnAdd}
-                  activeOpacity={0.7}
-                  onPress={() => {
-                    console.log('add photo');
-                  }}
-                >
-                  <Image
-                    source={require('../assets/images/Union.png')}
-                    style={styles.addIcon}
-                  />
-                </TouchableOpacity>
-              </View>
-              <Text style={styles.headerTitle}>Реєстрація</Text>
+              <Text style={styles.headerTitle}>Увійти</Text>
               <Formik
-                validationSchema={registrationValidationSchema}
-                initialValues={{ login: '', email: '', password: '' }}
+                validationSchema={loginValidationSchema}
+                initialValues={{ email: '', password: '' }}
                 onSubmit={values => {
                   keyboardHide();
                   console.log(values);
@@ -101,7 +82,7 @@ const RegistrationScreen = () => {
                   <View
                     style={{
                       ...styles.form,
-                      paddingBottom: isShowKeyboard ? 32 : 78,
+                      paddingBottom: isShowKeyboard ? 32 : 144,
                       width: dimensions,
                     }}
                   >
@@ -111,25 +92,8 @@ const RegistrationScreen = () => {
                       }}
                     >
                       <Input
-                        name="login"
-                        placeholder={'Логін'}
-                        onFocus={() => setIsShowKeyboard(true)}
-                        value={values.login}
-                        onChangeText={handleChange('login')}
-                      />
-                      {touched.login && errors.login && (
-                        <Text style={styles.errorText}>{errors.login}</Text>
-                      )}
-                    </View>
-                    <View
-                      style={{
-                        position: 'relative',
-                      }}
-                    >
-                      <Input
                         name="email"
                         placeholder="Адреса електронної пошти"
-                        stylesProp={{ marginTop: 16 }}
                         onFocus={() => setIsShowKeyboard(true)}
                         value={values.email}
                         onChangeText={handleChange('email')}
@@ -167,16 +131,11 @@ const RegistrationScreen = () => {
                         <Text style={styles.errorText}>{errors.password}</Text>
                       )}
                     </View>
-
                     {!isShowKeyboard && (
                       <View>
-                        <ButtonSubmit
-                          title={'Зареєструватися'}
-                          onPress={handleSubmit}
-                        />
-
+                        <ButtonSubmit title={'Увійти'} onPress={handleSubmit} />
                         <Text style={styles.linkText}>
-                          Вже є акаунт? Увійти
+                          Немає акаунта? Зареєструватися
                         </Text>
                       </View>
                     )}
@@ -191,101 +150,4 @@ const RegistrationScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  image: {
-    flex: 1,
-    resizeMode: 'cover',
-    justifyContent: 'flex-end',
-  },
-  wrapper: {
-    backgroundColor: '#FFFFFF',
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
-    paddingTop: 92,
-    alignItems: 'center',
-  },
-  headerTitle: {
-    fontFamily: 'Roboto-Medium',
-    fontSize: 30,
-    lineHeight: 35,
-    color: '#212121',
-    marginBottom: 25,
-    textAlign: 'center',
-  },
-  form: {
-    paddingHorizontal: 16,
-  },
-  userPhoto: {
-    height: 120,
-    width: 120,
-    borderRadius: 16,
-    position: 'absolute',
-    top: -60,
-    backgroundColor: '#F6F6F6',
-  },
-  btnAdd: {
-    height: 25,
-    width: 25,
-    backgroundColor: '#ffffff',
-    borderRadius: 50,
-    borderWidth: 1,
-    borderColor: '#FF6C00',
-    position: 'absolute',
-    bottom: 12,
-    right: -12,
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  addIcon: {},
-
-  btnShowPassword: {
-    position: 'absolute',
-    right: 16,
-    top: 30,
-  },
-  btnShowPasswordText: {
-    fontSize: 16,
-    color: '#1B4371',
-    fontFamily: 'Roboto-Regular',
-  },
-  btn: {
-    borderWidth: 1,
-    marginTop: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderColor: 'transparent',
-    width: '100%',
-    height: 51,
-
-    backgroundColor: '#FF6C00',
-    border: 1,
-    borderRadius: 100,
-    marginBottom: 16,
-  },
-  btnTitle: {
-    fontSize: 16,
-    color: '#ffffff',
-    fontFamily: 'Roboto-Regular',
-  },
-  linkText: {
-    fontFamily: 'Roboto-Regular',
-    textAlign: 'center',
-
-    fontSize: 16,
-    lineHeight: 19,
-    color: '#1B4371',
-  },
-  errorText: {
-    fontSize: 10,
-    color: 'red',
-    position: 'absolute',
-    bottom: -14,
-    left: 8,
-  },
-});
-
-export default RegistrationScreen;
+export default LoginScreen;

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {
-  StyleSheet,
   Text,
   View,
+  Image,
   ImageBackground,
   TouchableOpacity,
   Platform,
@@ -11,13 +11,18 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
 } from 'react-native';
-import Input from '../Components/Input';
-import ButtonSubmit from '../Components/ButtonSubmit';
+import Input from '../../Components/Input/Input';
+import ButtonSubmit from '../../Components/ButtonSubmit/ButtonSubmit';
+import { styles } from './RegistrationScreen.styled';
 import { Formik } from 'formik';
-import loginValidationSchema from '../Schemas/loginValidationSchema';
+import { registrationValidationSchema } from './registrationValidationSchema';
 
-const LoginScreen = () => {
+const RegistrationScreen = () => {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+
+  const [login, setLogin] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isHidePassword, setIsHidePassword] = useState(true);
 
   const [dimensions, setDimension] = useState(Dimensions.get('window').width);
@@ -56,16 +61,30 @@ const LoginScreen = () => {
       <View style={styles.container}>
         <ImageBackground
           style={styles.image}
-          source={require('../assets/images/mountain.jpg')}
+          source={require('../../assets/images/mountain.jpg')}
         >
           <KeyboardAvoidingView
             behavior={Platform.OS == 'ios' ? 'padding' : ''}
           >
             <View style={styles.wrapper}>
-              <Text style={styles.headerTitle}>Увійти</Text>
+              <View style={styles.userPhoto}>
+                <TouchableOpacity
+                  style={styles.btnAdd}
+                  activeOpacity={0.7}
+                  onPress={() => {
+                    console.log('add photo');
+                  }}
+                >
+                  <Image
+                    source={require('../../assets/images/Union.png')}
+                    style={styles.addIcon}
+                  />
+                </TouchableOpacity>
+              </View>
+              <Text style={styles.headerTitle}>Реєстрація</Text>
               <Formik
-                validationSchema={loginValidationSchema}
-                initialValues={{ email: '', password: '' }}
+                validationSchema={registrationValidationSchema}
+                initialValues={{ login: '', email: '', password: '' }}
                 onSubmit={values => {
                   keyboardHide();
                   console.log(values);
@@ -82,7 +101,7 @@ const LoginScreen = () => {
                   <View
                     style={{
                       ...styles.form,
-                      paddingBottom: isShowKeyboard ? 32 : 144,
+                      paddingBottom: isShowKeyboard ? 32 : 78,
                       width: dimensions,
                     }}
                   >
@@ -92,8 +111,25 @@ const LoginScreen = () => {
                       }}
                     >
                       <Input
+                        name="login"
+                        placeholder={'Логін'}
+                        onFocus={() => setIsShowKeyboard(true)}
+                        value={values.login}
+                        onChangeText={handleChange('login')}
+                      />
+                      {touched.login && errors.login && (
+                        <Text style={styles.errorText}>{errors.login}</Text>
+                      )}
+                    </View>
+                    <View
+                      style={{
+                        position: 'relative',
+                      }}
+                    >
+                      <Input
                         name="email"
                         placeholder="Адреса електронної пошти"
+                        stylesProp={{ marginTop: 16 }}
                         onFocus={() => setIsShowKeyboard(true)}
                         value={values.email}
                         onChangeText={handleChange('email')}
@@ -131,11 +167,16 @@ const LoginScreen = () => {
                         <Text style={styles.errorText}>{errors.password}</Text>
                       )}
                     </View>
+
                     {!isShowKeyboard && (
                       <View>
-                        <ButtonSubmit title={'Увійти'} onPress={handleSubmit} />
+                        <ButtonSubmit
+                          title={'Зареєструватися'}
+                          onPress={handleSubmit}
+                        />
+
                         <Text style={styles.linkText}>
-                          Немає акаунта? Зареєструватися
+                          Вже є акаунт? Увійти
                         </Text>
                       </View>
                     )}
@@ -150,78 +191,4 @@ const LoginScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  image: {
-    flex: 1,
-    resizeMode: 'cover',
-    justifyContent: 'flex-end',
-  },
-  wrapper: {
-    backgroundColor: '#FFFFFF',
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
-    paddingTop: 32,
-    alignItems: 'center',
-  },
-  headerTitle: {
-    fontFamily: 'Roboto-Medium',
-    fontSize: 30,
-    lineHeight: 35,
-    color: '#212121',
-    marginBottom: 25,
-    textAlign: 'center',
-  },
-  form: {
-    paddingHorizontal: 16,
-  },
-
-  btnShowPassword: {
-    position: 'absolute',
-    right: 16,
-    top: 30,
-  },
-  btnShowPasswordText: {
-    fontSize: 16,
-    color: '#1B4371',
-    fontFamily: 'Roboto-Regular',
-  },
-  btn: {
-    borderWidth: 1,
-    marginTop: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderColor: 'transparent',
-    width: '100%',
-    height: 51,
-
-    backgroundColor: '#FF6C00',
-    border: 1,
-    borderRadius: 100,
-    marginBottom: 16,
-  },
-  btnTitle: {
-    fontSize: 16,
-    color: '#ffffff',
-    fontFamily: 'Roboto-Regular',
-  },
-  linkText: {
-    fontFamily: 'Roboto-Regular',
-    textAlign: 'center',
-
-    fontSize: 16,
-    lineHeight: 19,
-    color: '#1B4371',
-  },
-  errorText: {
-    fontSize: 10,
-    color: 'red',
-    position: 'absolute',
-    bottom: -14,
-    left: 8,
-  },
-});
-
-export default LoginScreen;
+export default RegistrationScreen;

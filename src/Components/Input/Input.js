@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, TextInput } from 'react-native';
+import { TextInput } from 'react-native';
+import { styles } from './Input.styled';
 
 const Input = ({
   placeholder,
@@ -20,7 +21,6 @@ const Input = ({
         backgroundColor: onPress ? '#ffffff' : '#F6F6F6',
         ...stylesProp,
       }}
-      // onBlur={onBlur}
       name={name}
       placeholder={placeholder}
       onFocus={onFocus}
@@ -38,14 +38,3 @@ const Input = ({
 };
 
 export default Input;
-
-const styles = StyleSheet.create({
-  input: {
-    paddingHorizontal: 16,
-    borderWidth: 1,
-    height: 50,
-    borderRadius: 8,
-    fontSize: 16,
-    // fontFamily: 'Roboto-Regular',
-  },
-});

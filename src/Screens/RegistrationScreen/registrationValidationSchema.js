@@ -1,6 +1,7 @@
 import * as yup from 'yup';
 
-const loginValidationSchema = yup.object().shape({
+export const registrationValidationSchema = yup.object().shape({
+  login: yup.string().required('Login is Required'),
   email: yup
     .string()
     .email('Please enter valid email')
@@ -10,5 +11,3 @@ const loginValidationSchema = yup.object().shape({
     .min(8, ({ min }) => `Password must be at least ${min} characters`)
     .required('Password is required'),
 });
-
-export default loginValidationSchema;
