@@ -17,7 +17,7 @@ import { styles } from './RegistrationScreen.styled';
 import { Formik } from 'formik';
 import { registrationValidationSchema } from './registrationValidationSchema';
 
-const RegistrationScreen = () => {
+const RegistrationScreen = ({ navigation }) => {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
 
   const [login, setLogin] = useState('');
@@ -174,9 +174,14 @@ const RegistrationScreen = () => {
                           title={'Зареєструватися'}
                           onPress={handleSubmit}
                         />
-
                         <Text style={styles.linkText}>
-                          Вже є акаунт? Увійти
+                          Вже є акаунт?{' '}
+                          <Text
+                            onPress={() => navigation.navigate('Login')}
+                            style={styles.linkText}
+                          >
+                            Увійти
+                          </Text>
                         </Text>
                       </View>
                     )}

@@ -1,8 +1,11 @@
 import React from 'react';
-import { View } from 'react-native';
 import { useFonts } from 'expo-font';
+import { NavigationContainer } from '@react-navigation/native';
 import LoginScreen from './src/Screens/LoginScreen';
-import RegistrationScreen from './src/Screens/RegistrationScreen';
+
+import { useRoute } from './src/router';
+
+const routing = useRoute(true);
 
 export default function App() {
   const [loaded] = useFonts({
@@ -14,10 +17,6 @@ export default function App() {
     return null;
   }
 
-  return (
-    <View style={{ flex: 1 }}>
-      {/* <LoginScreen /> */}
-      <RegistrationScreen />
-    </View>
-  );
+  // return <LoginScreen />;
+  return <NavigationContainer>{routing}</NavigationContainer>;
 }

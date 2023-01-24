@@ -16,7 +16,7 @@ import { styles } from './LoginScreen.styled';
 import { Formik } from 'formik';
 import { loginValidationSchema } from './loginValidationSchema';
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [isHidePassword, setIsHidePassword] = useState(true);
 
@@ -71,14 +71,7 @@ const LoginScreen = () => {
                   console.log(values);
                 }}
               >
-                {({
-                  handleChange,
-                  handleBlur,
-                  handleSubmit,
-                  values,
-                  errors,
-                  touched,
-                }) => (
+                {({ handleChange, handleSubmit, values, errors, touched }) => (
                   <View
                     style={{
                       ...styles.form,
@@ -134,8 +127,15 @@ const LoginScreen = () => {
                     {!isShowKeyboard && (
                       <View>
                         <ButtonSubmit title={'Увійти'} onPress={handleSubmit} />
+
                         <Text style={styles.linkText}>
-                          Немає акаунта? Зареєструватися
+                          Немає акаунта?{' '}
+                          <Text
+                            onPress={() => navigation.navigate('Registration')}
+                            style={styles.linkText}
+                          >
+                            Зареєструватися
+                          </Text>
                         </Text>
                       </View>
                     )}
