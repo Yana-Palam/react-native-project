@@ -19,7 +19,7 @@ const CommentsScreen = () => {
       <View style={styles.container}>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : ''}>
           <Image
-            source={require('../../assets/images/img.jpg')}
+            source={require('../../../assets/images/img.jpg')}
             style={styles.postPhoto}
           />
 

@@ -10,8 +10,8 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
 } from 'react-native';
-import Input from '../../Components/Input/Input';
-import ButtonSubmit from '../../Components/ButtonSubmit/ButtonSubmit';
+import Input from '../../../Components/Input/Input';
+import ButtonSubmit from '../../../Components/ButtonSubmit/ButtonSubmit';
 import { styles } from './LoginScreen.styled';
 import { Formik } from 'formik';
 import { loginValidationSchema } from './loginValidationSchema';
@@ -56,7 +56,7 @@ const LoginScreen = ({ navigation }) => {
       <View style={styles.container}>
         <ImageBackground
           style={styles.image}
-          source={require('../../assets/images/mountain.jpg')}
+          source={require('../../../assets/images/mountain.jpg')}
         >
           <KeyboardAvoidingView
             behavior={Platform.OS == 'ios' ? 'padding' : ''}

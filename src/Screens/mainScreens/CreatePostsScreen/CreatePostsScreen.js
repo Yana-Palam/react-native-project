@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-  ScrollView,
   View,
   TextInput,
   KeyboardAvoidingView,
@@ -11,19 +10,47 @@ import {
   Dimensions,
   Image,
 } from 'react-native';
+import { Camera } from 'expo-camera';
+import * as Location from 'expo-location';
 
 import { MaterialIcons, Feather } from '@expo/vector-icons';
 import { styles } from './CreatePostsScreen.styled';
 
-const CreatePostsScreen = () => {
+const CreatePostsScreen = ({ navigation }) => {
+  const [coordinates, setCoordinates] = useState(null);
+  const [camera, setCamera] = useState(null);
+
   const [photoUri, setPhotoUri] = useState(null);
   const [title, setTitle] = useState(null);
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState({
+    latitude: null,
+    longitude: null,
+    place: null,
+  });
   const [isReadySubmit, setIsReadySubmit] = useState(false);
 
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
 
   const [dimensions, setDimension] = useState(Dimensions.get('window').width);
+
+  const [errorMsg, setErrorMsg] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+
+      const latitude = location.coords.latitude;
+      const longitude = location.coords.longitude;
+      setCoordinates({ latitude, longitude });
+      setLocation(prev => ({ ...prev, latitude, longitude }));
+    })();
+  }, []);
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
@@ -31,7 +58,7 @@ const CreatePostsScreen = () => {
   };
 
   useEffect(() => {
-    if (photoUri && title && location) {
+    if (photoUri && title && location.place) {
       setIsReadySubmit(true);
     } else setIsReadySubmit(false);
   }, [photoUri, title, location]);
@@ -57,13 +84,26 @@ const CreatePostsScreen = () => {
   }, [keyboardHide]);
 
   const onSubmit = () => {
-    console.log('create Post');
+    navigation.navigate('DefaultScreen', { photoUri, title, location });
+    onDeletePost();
   };
 
   const onDeletePost = () => {
     setPhotoUri(null);
-    setTitle(null), setLocation(null);
+    setTitle(null), setLocation({});
     console.log('delete post');
+  };
+
+  const getLocation = async () => {
+    const placePhoto = await Location.reverseGeocodeAsync(coordinates);
+    const place = `${placePhoto[0].region}, ${placePhoto[0].country}`;
+    setLocation(prev => ({ ...prev, place }));
+  };
+
+  const takePhoto = async () => {
+    const { uri } = await camera.takePictureAsync();
+    setPhotoUri(uri);
+    getLocation();
   };
 
   return (
@@ -77,7 +117,7 @@ const CreatePostsScreen = () => {
               {photoUri ? (
                 <>
                   <Image
-                    source={require('../../assets/images/img.jpg')}
+                    source={{ uri: photoUri }}
                     style={{
                       width: dimensions - 16 * 2,
                       height: 240,
@@ -87,7 +127,7 @@ const CreatePostsScreen = () => {
                     style={styles.photoBtn}
                     activeOpacity={0.7}
                     onPress={() => {
-                      console.log('add photo');
+                      setPhotoUri(null);
                     }}
                   >
                     <MaterialIcons
@@ -98,12 +138,12 @@ const CreatePostsScreen = () => {
                   </TouchableOpacity>
                 </>
               ) : (
-                <View style={styles.cameraWrapper}>
+                <Camera style={styles.cameraWrapper} ref={setCamera}>
                   <TouchableOpacity
                     style={styles.cameraBtn}
                     activeOpacity={0.7}
                     onPress={() => {
-                      console.log('add photo');
+                      takePhoto();
                     }}
                   >
                     <MaterialIcons
@@ -112,7 +152,7 @@ const CreatePostsScreen = () => {
                       color="#BDBDBD"
                     />
                   </TouchableOpacity>
-                </View>
+                </Camera>
               )}
             </View>
             <Text style={styles.textAddImg}>Завантажити фото</Text>
@@ -139,9 +179,9 @@ const CreatePostsScreen = () => {
                     paddingLeft: 32,
                   }}
                   placeholder="Місцевість..."
-                  value={location}
+                  value={location.place}
                   onChangeText={value => {
-                    setLocation(value);
+                    setLocation(prev => ({ ...prev, place: value }));
                   }}
                 />
               </View>

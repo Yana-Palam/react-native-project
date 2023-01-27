@@ -1,7 +1,6 @@
 import React from 'react';
 import { useFonts } from 'expo-font';
 import { NavigationContainer } from '@react-navigation/native';
-import LoginScreen from './src/Screens/LoginScreen';
 
 import { useRoute } from './src/router';
 
@@ -17,6 +16,5 @@ export default function App() {
     return null;
   }
 
-  // return <LoginScreen />;
   return <NavigationContainer>{routing}</NavigationContainer>;
 }

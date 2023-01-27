@@ -37,7 +37,7 @@ const ProfileScreen = ({ navigation }) => {
     <View style={styles.container}>
       <ImageBackground
         style={styles.image}
-        source={require('../../assets/images/mountain.jpg')}
+        source={require('../../../assets/images/mountain.jpg')}
       >
         <View style={styles.wrapper}>
           <View style={styles.logoutBtn}>
@@ -52,7 +52,7 @@ const ProfileScreen = ({ navigation }) => {
           </View>
           <View style={styles.userPhoto}>
             <Image
-              source={require('../../assets/images/avatar.png')}
+              source={require('../../../assets/images/avatar.png')}
               style={styles.addIcon}
             />
             <TouchableOpacity
@@ -63,7 +63,7 @@ const ProfileScreen = ({ navigation }) => {
               }}
             >
               <Image
-                source={require('../../assets/images/remove.png')}
+                source={require('../../../assets/images/remove.png')}
                 style={styles.addIcon}
               />
             </TouchableOpacity>
@@ -72,7 +72,7 @@ const ProfileScreen = ({ navigation }) => {
 
           <View style={styles.postWrapper}>
             <Image
-              source={require('../../assets/images/img.jpg')}
+              source={require('../../../assets/images/img.jpg')}
               style={{ ...styles.postPhoto, width: dimensions - 16 * 2 }}
             />
             <Text style={styles.postTitle}>{posts.title}</Text>
@@ -82,8 +82,7 @@ const ProfileScreen = ({ navigation }) => {
                   style={styles.link}
                   activeOpacity={0.7}
                   onPress={() => {
-                    console.log('CommentsScreen');
-                    navigation.navigate('CommentsScreen');
+                    navigation.navigate('Comments');
                   }}
                 >
                   <Feather name="message-circle" size={24} color="#BDBDBD" />
@@ -106,7 +105,7 @@ const ProfileScreen = ({ navigation }) => {
                 style={styles.link}
                 activeOpacity={0.7}
                 onPress={() => {
-                  console.log('MapScreen');
+                  navigation.navigate('Map');
                 }}
               >
                 <Feather name="map-pin" size={24} color="#BDBDBD" />

@@ -11,8 +11,8 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
 } from 'react-native';
-import Input from '../../Components/Input/Input';
-import ButtonSubmit from '../../Components/ButtonSubmit/ButtonSubmit';
+import Input from '../../../Components/Input/Input';
+import ButtonSubmit from '../../../Components/ButtonSubmit/ButtonSubmit';
 import { styles } from './RegistrationScreen.styled';
 import { Formik } from 'formik';
 import { registrationValidationSchema } from './registrationValidationSchema';
@@ -61,7 +61,7 @@ const RegistrationScreen = ({ navigation }) => {
       <View style={styles.container}>
         <ImageBackground
           style={styles.image}
-          source={require('../../assets/images/mountain.jpg')}
+          source={require('../../../assets/images/mountain.jpg')}
         >
           <KeyboardAvoidingView
             behavior={Platform.OS == 'ios' ? 'padding' : ''}
@@ -76,7 +76,7 @@ const RegistrationScreen = ({ navigation }) => {
                   }}
                 >
                   <Image
-                    source={require('../../assets/images/Union.png')}
+                    source={require('../../../assets/images/Union.png')}
                     style={styles.addIcon}
                   />
                 </TouchableOpacity>

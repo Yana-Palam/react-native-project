@@ -5,9 +5,9 @@ import { Feather, Ionicons } from '@expo/vector-icons';
 
 const MainTab = createBottomTabNavigator();
 
-import PostsScreen from '../PostsScreen';
-import ProfileScreen from '../ProfileScreen';
-import CreatePostsScreen from '../CreatePostsScreen';
+import PostsScreen from '../PostsScreen/PostsScreen';
+import ProfileScreen from '../ProfileScreen/ProfileScreen';
+import CreatePostsScreen from '../CreatePostsScreen/CreatePostsScreen';
 
 const Home = ({ navigation }) => {
   return (
@@ -34,25 +34,8 @@ const Home = ({ navigation }) => {
       <MainTab.Screen
         options={{
           tabBarIcon: () => <Feather name="grid" color="#212121CC" size={24} />,
-          title: 'Публікації',
-
-          headerTitleStyle: {
-            fontFamily: 'Roboto-Medium',
-            color: '#212121',
-            fontSize: 17,
-            lineHeight: 22,
-          },
-          headerRight: () => (
-            <Feather
-              name="log-out"
-              color="#BDBDBD"
-              size={24}
-              style={{ marginRight: 10 }}
-              onPress={() => {
-                console.log('logout');
-              }}
-            />
-          ),
+          headerShown: false,
+          tabBarShowLabel: false,
         }}
         name="Posts"
         component={PostsScreen}

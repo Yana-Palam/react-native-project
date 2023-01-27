@@ -8,7 +8,7 @@ import {
   FlatList,
 } from 'react-native';
 
-import { styles } from './PostsScreen.styled';
+import { styles } from './DefaultScreenPosts.styled';
 import { Feather } from '@expo/vector-icons';
 
 const user = {
@@ -16,26 +16,15 @@ const user = {
   email: 'email@example.com',
 };
 
-const posts = [
-  {
-    id: '1',
-    photoUri:
-      'https://pixabay.com/photos/ground-ginseng-flower-pink-flower-7523161/',
-    title: 'Mountains',
-    commentsCount: 5,
-    location: 'Ivano-Frankivsk Region, Ukraine',
-  },
-  {
-    id: '2',
-    photoUri:
-      'https://pixabay.com/photos/ground-ginseng-flower-pink-flower-7523161/',
-    title: 'Flowers',
-    commentsCount: 8,
-    location: 'Odessa Region, Ukraine',
-  },
-];
+const DefaultScreenPosts = ({ navigation, route }) => {
+  const [posts, setPosts] = useState([]);
 
-const PostsScreen = () => {
+  useEffect(() => {
+    if (route.params) {
+      setPosts(prevState => [route.params, ...prevState]);
+    }
+  }, [route.params]);
+
   const [dimensions, setDimension] = useState(Dimensions.get('window').width);
 
   useEffect(() => {
@@ -54,7 +43,7 @@ const PostsScreen = () => {
       <View style={styles.userInfo}>
         <Image
           style={styles.userPhoto}
-          source={require('../../assets/images/avatar.png')}
+          source={require('../../../assets/images/avatar.png')}
         />
         <View>
           <Text style={styles.userName}>{user.name}</Text>
@@ -64,11 +53,11 @@ const PostsScreen = () => {
 
       <FlatList
         data={posts}
-        keyExtractor={item => item.id}
+        keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
           <View style={{ marginTop: 32 }}>
             <Image
-              source={require('../../assets/images/img.jpg')}
+              source={{ uri: item.photoUri }}
               style={{ ...styles.postPhoto, width: dimensions - 16 * 2 }}
             />
             <Text style={styles.postTitle}>{item.title}</Text>
@@ -76,25 +65,27 @@ const PostsScreen = () => {
               <TouchableOpacity
                 style={styles.link}
                 activeOpacity={0.7}
-                onPress={() => {
-                  console.log('comments');
-                }}
+                onPress={() => navigation.navigate('Comments')}
               >
                 <Feather name="message-circle" size={24} color="#BDBDBD" />
                 <Text style={{ ...styles.countComments, marginLeft: 6 }}>
-                  {item.commentsCount}
+                  9
                 </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 style={styles.link}
                 activeOpacity={0.7}
-                onPress={() => {
-                  console.log('map');
-                }}
+                onPress={() =>
+                  navigation.navigate('Map', {
+                    latitude: item.location.latitude,
+                    longitude: item.location.longitude,
+                    place: item.location.place,
+                  })
+                }
               >
                 <Feather name="map-pin" size={24} color="#BDBDBD" />
-                <Text style={styles.locationText}>{item.location}</Text>
+                <Text style={styles.locationText}>{item.location.place}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -104,4 +95,4 @@ const PostsScreen = () => {
   );
 };
 
-export default PostsScreen;
+export default DefaultScreenPosts;

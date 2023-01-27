@@ -4,9 +4,9 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 const MainStack = createStackNavigator();
 
-import LoginScreen from './Screens/LoginScreen';
-import RegistrationScreen from './Screens/RegistrationScreen';
-import Home from './Screens/Home';
+import LoginScreen from './Screens/auth/LoginScreen/LoginScreen';
+import RegistrationScreen from './Screens/auth/RegistrationScreen/RegistrationScreen';
+import Home from './Screens/mainScreens/Home/Home';
 
 export const useRoute = isAuth => {
   return (

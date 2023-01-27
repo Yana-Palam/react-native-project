@@ -15,15 +15,17 @@ export const styles = StyleSheet.create({
     borderColor: '#E8E8E8',
     marginTop: 32,
   },
+  camera: {},
 
   photoBtn: {
+    width: 60,
+    height: 60,
     position: 'absolute',
     bottom: 240 / 2 - 30,
     left: 320 / 2,
     justifyContent: 'center',
     alignItems: 'center',
-    width: 60,
-    height: 60,
+
     borderRadius: 50,
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
   },
