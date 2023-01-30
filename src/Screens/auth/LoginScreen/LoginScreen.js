@@ -15,6 +15,8 @@ import ButtonSubmit from '../../../Components/ButtonSubmit/ButtonSubmit';
 import { styles } from './LoginScreen.styled';
 import { Formik } from 'formik';
 import { loginValidationSchema } from './loginValidationSchema';
+import { useDispatch } from 'react-redux';
+import { login } from '../../../redux/auth/authOperations';
 
 const LoginScreen = ({ navigation }) => {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
@@ -26,6 +28,8 @@ const LoginScreen = ({ navigation }) => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
   };
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const onChange = () => {
@@ -68,7 +72,7 @@ const LoginScreen = ({ navigation }) => {
                 initialValues={{ email: '', password: '' }}
                 onSubmit={values => {
                   keyboardHide();
-                  console.log(values);
+                  dispatch(login(values));
                 }}
               >
                 {({ handleChange, handleSubmit, values, errors, touched }) => (

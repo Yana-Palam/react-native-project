@@ -35,6 +35,11 @@ export const styles = StyleSheet.create({
     top: -60,
     backgroundColor: '#F6F6F6',
   },
+  avatar: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 16,
+  },
   btnAdd: {
     height: 25,
     width: 25,

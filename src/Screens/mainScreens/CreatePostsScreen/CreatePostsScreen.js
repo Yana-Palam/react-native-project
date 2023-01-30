@@ -1,4 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { nanoid } from 'nanoid';
+import { app, db, storage } from '../../../firebase/config';
+import { useSelector } from 'react-redux';
 import {
   View,
   TextInput,
@@ -9,6 +14,7 @@ import {
   TouchableOpacity,
   Dimensions,
   Image,
+  Alert,
 } from 'react-native';
 import { Camera } from 'expo-camera';
 import * as Location from 'expo-location';
@@ -16,11 +22,17 @@ import * as Location from 'expo-location';
 import { MaterialIcons, Feather } from '@expo/vector-icons';
 import { styles } from './CreatePostsScreen.styled';
 
+// const db = getFirestore(app);
+// const storage = getStorage(app);
+const storageRef = ref(storage);
+
 const CreatePostsScreen = ({ navigation }) => {
+  const { userId } = useSelector(state => state.auth.user);
+  const { name } = useSelector(state => state.auth.user);
   const [coordinates, setCoordinates] = useState(null);
   const [camera, setCamera] = useState(null);
 
-  const [photoUri, setPhotoUri] = useState(null);
+  const [photo, setPhoto] = useState(null);
   const [title, setTitle] = useState(null);
   const [location, setLocation] = useState({
     latitude: null,
@@ -33,13 +45,11 @@ const CreatePostsScreen = ({ navigation }) => {
 
   const [dimensions, setDimension] = useState(Dimensions.get('window').width);
 
-  const [errorMsg, setErrorMsg] = useState(null);
-
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
+        Alert.alert('Permission to access location was denied');
         return;
       }
 
@@ -58,10 +68,10 @@ const CreatePostsScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    if (photoUri && title && location.place) {
+    if (photo && title && location.place) {
       setIsReadySubmit(true);
     } else setIsReadySubmit(false);
-  }, [photoUri, title, location]);
+  }, [photo, title, location]);
 
   useEffect(() => {
     const onChange = () => {
@@ -84,14 +94,14 @@ const CreatePostsScreen = ({ navigation }) => {
   }, [keyboardHide]);
 
   const onSubmit = () => {
-    navigation.navigate('DefaultScreen', { photoUri, title, location });
+    uploadPostToServer();
+    navigation.navigate('DefaultScreen');
     onDeletePost();
   };
 
   const onDeletePost = () => {
-    setPhotoUri(null);
+    setPhoto(null);
     setTitle(null), setLocation({});
-    console.log('delete post');
   };
 
   const getLocation = async () => {
@@ -102,8 +112,40 @@ const CreatePostsScreen = ({ navigation }) => {
 
   const takePhoto = async () => {
     const { uri } = await camera.takePictureAsync();
-    setPhotoUri(uri);
+    setPhoto(uri);
     getLocation();
+  };
+
+  const uploadPostToServer = async () => {
+    const photoUri = await uploadPhotoToServer();
+    const datePost = Date.now();
+    const docRef = await addDoc(collection(db, 'posts'), {
+      photoUri,
+      location,
+      title,
+      userId,
+      UserName: name,
+      datePost,
+    });
+  };
+
+  const uploadPhotoToServer = async () => {
+    const response = await fetch(photo);
+    const file = await response.blob();
+
+    // const uniquePostId = nanoid();
+    const uniquePostId = Date.now().toString();
+
+    const pathPhoto = `postImage/${uniquePostId}.jpg`;
+
+    const photoRef = ref(storage, pathPhoto);
+
+    const uploadPhoto = await uploadBytes(photoRef, file, {
+      contentType: 'image/jpeg',
+    });
+
+    const processedPhoto = await getDownloadURL(uploadPhoto.ref);
+    return processedPhoto;
   };
 
   return (
@@ -114,10 +156,10 @@ const CreatePostsScreen = ({ navigation }) => {
             <View
               style={{ ...styles.imageWrapper, width: dimensions - 16 * 2 }}
             >
-              {photoUri ? (
+              {photo ? (
                 <>
                   <Image
-                    source={{ uri: photoUri }}
+                    source={{ uri: photo }}
                     style={{
                       width: dimensions - 16 * 2,
                       height: 240,
@@ -127,7 +169,7 @@ const CreatePostsScreen = ({ navigation }) => {
                     style={styles.photoBtn}
                     activeOpacity={0.7}
                     onPress={() => {
-                      setPhotoUri(null);
+                      setPhoto(null);
                     }}
                   >
                     <MaterialIcons

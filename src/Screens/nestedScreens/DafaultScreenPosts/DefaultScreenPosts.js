@@ -1,4 +1,8 @@
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { collection, onSnapshot } from 'firebase/firestore';
+import { db } from '../../../firebase/config';
+
 import {
   View,
   Text,
@@ -11,21 +15,26 @@ import {
 import { styles } from './DefaultScreenPosts.styled';
 import { Feather } from '@expo/vector-icons';
 
-const user = {
-  name: 'Natali Romanova',
-  email: 'email@example.com',
-};
-
-const DefaultScreenPosts = ({ navigation, route }) => {
+const DefaultScreenPosts = ({ navigation }) => {
+  const { name, email, photoUri } = useSelector(state => state.auth.user);
   const [posts, setPosts] = useState([]);
+  const [dimensions, setDimension] = useState(Dimensions.get('window').width);
+
+  const getAllPosts = async () => {
+    onSnapshot(collection(db, 'posts'), doc => {
+      const result = [];
+      doc.docs.forEach(doc => {
+        const post = { ...doc.data(), idPost: doc.id };
+        result.push(post);
+      });
+      result.sort((a, b) => b.datePost - a.datePost);
+      setPosts(result);
+    });
+  };
 
   useEffect(() => {
-    if (route.params) {
-      setPosts(prevState => [route.params, ...prevState]);
-    }
-  }, [route.params]);
-
-  const [dimensions, setDimension] = useState(Dimensions.get('window').width);
+    getAllPosts();
+  }, []);
 
   useEffect(() => {
     const onChange = () => {
@@ -41,21 +50,20 @@ const DefaultScreenPosts = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <View style={styles.userInfo}>
-        <Image
-          style={styles.userPhoto}
-          source={require('../../../assets/images/avatar.png')}
-        />
+        {photoUri && (
+          <Image style={styles.userPhoto} source={{ uri: photoUri }} />
+        )}
         <View>
-          <Text style={styles.userName}>{user.name}</Text>
-          <Text style={styles.userEmail}>{user.email}</Text>
+          <Text style={styles.userName}>{name}</Text>
+          <Text style={styles.userEmail}>{email}</Text>
         </View>
       </View>
 
       <FlatList
         data={posts}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={item => item.idPost}
         renderItem={({ item }) => (
-          <View style={{ marginTop: 32 }}>
+          <View style={{ marginBottom: 32 }}>
             <Image
               source={{ uri: item.photoUri }}
               style={{ ...styles.postPhoto, width: dimensions - 16 * 2 }}
@@ -65,11 +73,17 @@ const DefaultScreenPosts = ({ navigation, route }) => {
               <TouchableOpacity
                 style={styles.link}
                 activeOpacity={0.7}
-                onPress={() => navigation.navigate('Comments')}
+                onPress={() =>
+                  navigation.navigate('Comments', {
+                    idPost: item.idPost,
+                    photoUri: item.photoUri,
+                    title: item.title,
+                  })
+                }
               >
                 <Feather name="message-circle" size={24} color="#BDBDBD" />
                 <Text style={{ ...styles.countComments, marginLeft: 6 }}>
-                  9
+                  {item.comments?.length || 0}
                 </Text>
               </TouchableOpacity>
 

@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { registration } from '../../../redux/auth/authOperations';
+import { takeAvatar } from '../../../helpers/uploadAvatarToServer';
+
 import {
   Text,
   View,
@@ -11,6 +15,7 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
 } from 'react-native';
+
 import Input from '../../../Components/Input/Input';
 import ButtonSubmit from '../../../Components/ButtonSubmit/ButtonSubmit';
 import { styles } from './RegistrationScreen.styled';
@@ -18,14 +23,12 @@ import { Formik } from 'formik';
 import { registrationValidationSchema } from './registrationValidationSchema';
 
 const RegistrationScreen = ({ navigation }) => {
+  const [photoUri, setPhotoUri] = useState(null);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
-
-  const [login, setLogin] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [isHidePassword, setIsHidePassword] = useState(true);
-
   const [dimensions, setDimension] = useState(Dimensions.get('window').width);
+
+  const dispatch = useDispatch();
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
@@ -56,6 +59,11 @@ const RegistrationScreen = ({ navigation }) => {
     setIsHidePassword(prev => !prev);
   };
 
+  const uploadAvatarToServer = async () => {
+    const avatar = await takeAvatar();
+    setPhotoUri(avatar);
+  };
+
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <View style={styles.container}>
@@ -68,12 +76,13 @@ const RegistrationScreen = ({ navigation }) => {
           >
             <View style={styles.wrapper}>
               <View style={styles.userPhoto}>
+                {photoUri && (
+                  <Image source={{ uri: photoUri }} style={styles.avatar} />
+                )}
                 <TouchableOpacity
                   style={styles.btnAdd}
                   activeOpacity={0.7}
-                  onPress={() => {
-                    console.log('add photo');
-                  }}
+                  onPress={uploadAvatarToServer}
                 >
                   <Image
                     source={require('../../../assets/images/Union.png')}
@@ -84,10 +93,10 @@ const RegistrationScreen = ({ navigation }) => {
               <Text style={styles.headerTitle}>Реєстрація</Text>
               <Formik
                 validationSchema={registrationValidationSchema}
-                initialValues={{ login: '', email: '', password: '' }}
+                initialValues={{ name: '', email: '', password: '' }}
                 onSubmit={values => {
                   keyboardHide();
-                  console.log(values);
+                  dispatch(registration({ ...values, photoUri }));
                 }}
               >
                 {({
@@ -111,14 +120,14 @@ const RegistrationScreen = ({ navigation }) => {
                       }}
                     >
                       <Input
-                        name="login"
+                        name="name"
                         placeholder={'Логін'}
                         onFocus={() => setIsShowKeyboard(true)}
-                        value={values.login}
-                        onChangeText={handleChange('login')}
+                        value={values.name}
+                        onChangeText={handleChange('name')}
                       />
-                      {touched.login && errors.login && (
-                        <Text style={styles.errorText}>{errors.login}</Text>
+                      {touched.name && errors.name && (
+                        <Text style={styles.errorText}>{errors.name}</Text>
                       )}
                     </View>
                     <View

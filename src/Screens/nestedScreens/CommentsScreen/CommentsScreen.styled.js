@@ -8,6 +8,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
     backgroundColor: '#FFFFFF',
   },
+
   postPhoto: {
     height: 240,
     marginBottom: 32,
@@ -21,6 +22,7 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#E8E8E8',
     marginBottom: 16,
+    marginTop: 16,
     borderRadius: 100,
     borderColor: '#E8E8E8',
     borderWidth: 1,
@@ -30,7 +32,7 @@ export const styles = StyleSheet.create({
   },
   inputBtn: {
     position: 'absolute',
-    top: 8,
+    top: 24,
     right: 8,
     justifyContent: 'center',
     alignItems: 'center',
@@ -38,5 +40,44 @@ export const styles = StyleSheet.create({
     height: 34,
     borderRadius: 100,
     backgroundColor: '#FF6C00',
+  },
+  commentWrapper: {
+    flexDirection: 'row',
+    marginBottom: 24,
+  },
+  commentIcon: {
+    width: 28,
+    height: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#1B4371',
+    borderRadius: 14,
+    marginRight: 16,
+    overflow: 'hidden',
+  },
+  commentPhoto: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 14,
+  },
+  commentTextWrapper: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.03)',
+    padding: 16,
+    borderRadius: 6,
+  },
+  commentText: {
+    fontFamily: 'Roboto-Regular',
+    fontSize: 13,
+    lineHeight: 18,
+    color: '#212121',
+    marginBottom: 8,
+  },
+  commentDate: {
+    fontFamily: 'Roboto-Regular',
+    fontSize: 10,
+    lineHeight: 12,
+    textAlign: 'right',
+    color: 'rgba(189, 189, 189, 1)',
   },
 });

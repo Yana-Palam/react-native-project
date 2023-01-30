@@ -9,6 +9,8 @@ export const styles = StyleSheet.create({
   userInfo: {
     paddingLeft: 16,
     paddingTop: 32,
+    paddingBottom: 32,
+
     flexDirection: 'row',
     alignItems: 'center',
   },
