@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { getFirestore, collection, addDoc } from 'firebase/firestore';
-import { nanoid } from 'nanoid';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { collection, addDoc } from 'firebase/firestore';
 import { app, db, storage } from '../../../firebase/config';
 import { useSelector } from 'react-redux';
 import {
@@ -21,10 +20,6 @@ import * as Location from 'expo-location';
 
 import { MaterialIcons, Feather } from '@expo/vector-icons';
 import { styles } from './CreatePostsScreen.styled';
-
-// const db = getFirestore(app);
-// const storage = getStorage(app);
-const storageRef = ref(storage);
 
 const CreatePostsScreen = ({ navigation }) => {
   const { userId } = useSelector(state => state.auth.user);
@@ -133,7 +128,6 @@ const CreatePostsScreen = ({ navigation }) => {
     const response = await fetch(photo);
     const file = await response.blob();
 
-    // const uniquePostId = nanoid();
     const uniquePostId = Date.now().toString();
 
     const pathPhoto = `postImage/${uniquePostId}.jpg`;

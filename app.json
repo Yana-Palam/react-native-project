@@ -1,10 +1,11 @@
 {
   "expo": {
-    "name": "react-native-project",
-    "slug": "react-native-project",
+    "name": "Social network App",
+    "slug": "social-network-app",
+    "description": "This is a social network application",
     "version": "1.0.0",
     "orientation": "default",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/sn-app.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
